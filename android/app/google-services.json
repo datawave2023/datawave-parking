@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "470976863798",
+    "project_id": "parkingapp-d397e",
+    "storage_bucket": "parkingapp-d397e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:470976863798:android:f03a9d4f02b9ab38494297",
+        "android_client_info": {
+          "package_name": "com.mycompany.estacionamientomedido"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzyvU9MZf1kwgBDXCqvtswlP90Sji39iw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
