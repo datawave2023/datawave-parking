@@ -1,5 +1,6 @@
 // Automatic FlutterFlow imports
 import '/backend/backend.dart';
+import '/backend/schema/structs/index.dart';
 import '/actions/actions.dart' as action_blocks;
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/material.dart';
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 Future montoAcobrarmp(double? monto) async {
   // Add your function code here!
@@ -40,10 +42,18 @@ Future montoAcobrarmp(double? monto) async {
   );
 
   if (response.statusCode == 201) {
-    // Si el pago se crea exitosamente, podrías redirigir al usuario a la URL de pago generada por Mercado Pago
-    //String urlPago = jsonDecode(response.body)['init_point'];
+    Map<String, dynamic> jsonObject = jsonDecode(response.body);
+    var preferenceId = jsonObject['id'];
+    var url =
+        'https://sandbox.mercadopago.com.ar/checkout/v1/redirect?pref_id=$preferenceId';
+    Uri uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else {
+      throw 'Could not launch $url';
+    }
   } else {
-    // print('Error al crear el pago: ${response.statusCode}');
-    print(response.body);
+    print('Error al crear el pago');
+    //print(response.body);
   }
 }

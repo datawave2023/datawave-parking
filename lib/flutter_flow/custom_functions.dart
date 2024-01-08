@@ -10,6 +10,7 @@ import 'place.dart';
 import 'uploaded_file.dart';
 import '/backend/backend.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '/backend/schema/structs/index.dart';
 import '/auth/firebase_auth/auth_util.dart';
 
 double? sumaingresos(List<double>? ingresos) {
@@ -55,6 +56,24 @@ double? balance(
   }
 
   return totalIngreso - totalSalida;
+}
+
+int? horas(
+  List<DateTime>? fechas,
+  DateTime? currentime,
+) {
+  // return count fechas que esten entre el inicio del dia de hoy y current time
+  if (fechas == null || currentime == null) {
+    return null;
+  }
+
+  final now = DateTime.now();
+  final startOfDay = DateTime(now.year, now.month, now.day);
+  final count = fechas
+      .where((fecha) => fecha.isAfter(startOfDay) && fecha.isBefore(currentime))
+      .length;
+
+  return count;
 }
 
 String? definepolygon() {
@@ -131,6 +150,11 @@ double tiempodeestacionamiento(
   return minutes / 60.0;
 }
 
+double? longitud(LatLng? coordenada) {
+  // retornar latitud a partir de LatLng(lat: 0, lng: 0)
+  return coordenada?.longitude;
+}
+
 double? montoacobrar2(
   double tiempo,
   double? valorhora,
@@ -149,4 +173,56 @@ double? promediotiempoestacionamiento(
     return null;
   }
   return tiempoestacionamiento / countmovimientos;
+}
+
+String mayuscula(String patente) {
+  // return uppercase patente
+  return patente.toUpperCase();
+}
+
+double cuidadorescobrar(
+  double monto,
+  double porcentaje,
+) {
+  // return monto * porcentaje
+  return monto * porcentaje;
+}
+
+bool? hora16() {
+  // return true si la hora de del dia de hoy es menor a las 16hs de argentina
+  final now = DateTime.now()
+      .toUtc()
+      .add(Duration(hours: -3)); // Convert to Argentina time
+  final hour = now.hour;
+  return hour < 18;
+}
+
+double? latitud(LatLng? coordenada) {
+  // retornar latitud a partir de LatLng(lat: 0, lng: 0)
+  if (coordenada != null) {
+    return coordenada.latitude;
+  } else {
+    return null;
+  }
+}
+
+int? contarautosinspeccionados(List<DateTime>? fecha) {
+  // count fecha que esten dentro de 00 hs y la 23 del dia de hoy con el horario de argentina
+  final now = DateTime.now()
+      .toUtc()
+      .subtract(Duration(hours: -3)); // Adjust for Argentina timezone
+  final startOfDay = DateTime(now.year, now.month, now.day);
+  final endOfDay =
+      startOfDay.add(Duration(days: 1)).subtract(Duration(milliseconds: 1));
+  final filteredDates = fecha
+      ?.where((date) => date.isAfter(startOfDay) && date.isBefore(endOfDay));
+  return filteredDates?.length;
+}
+
+DateTime? hoy() {
+  // return today 00 hs de argentina
+  final now = DateTime.now();
+  final argentina = DateTime.now().toUtc().add(Duration(hours: -3));
+  final today = DateTime(argentina.year, argentina.month, argentina.day);
+  return today; // returns today at 00:00:00 in Argentina timezone
 }

@@ -43,7 +43,7 @@
 
   <!-- Status Bar color in Safari browser (iOS) and PWA -->
   <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f1f4f8">
-  <meta name="theme-color" media="(prefers-color-scheme: dark)"  content="#1d2428">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)"  content="#f1f4f8">
 
   <link rel="manifest" href="manifest.json">
   <script>
@@ -54,8 +54,12 @@
   <script src="flutter.js" defer></script>
 </head>
 <body>
+  
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA7SdqBG5UbBWLNWtHNtB01ZrH2WEbVrXE"></script>
+  
+  
+  
   <script>
-    
     window.addEventListener('load', function (ev) {
       // Download main.dart.js
       _flutter.loader.loadEntrypoint({
@@ -66,16 +70,12 @@
         },
         onEntrypointLoaded: async function(engineInitializer) {
           // Initialize the Flutter engine
-          let appRunner = await engineInitializer.initializeEngine();
+          let appRunner = await engineInitializer.initializeEngine({});
           // Run the app
           await appRunner.runApp();
         }
       });
     });
   </script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA7SdqBG5UbBWLNWtHNtB01ZrH2WEbVrXE"></script>
-  
-  
-  
 </body>
 </html>

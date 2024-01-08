@@ -71,6 +71,31 @@ class VehiculosRecord extends FirestoreRecord {
   DocumentReference? get idmovimientoactual => _idmovimientoactual;
   bool hasIdmovimientoactual() => _idmovimientoactual != null;
 
+  // "Autoinspeccionado" field.
+  bool? _autoinspeccionado;
+  bool get autoinspeccionado => _autoinspeccionado ?? false;
+  bool hasAutoinspeccionado() => _autoinspeccionado != null;
+
+  // "Diacompleto" field.
+  bool? _diacompleto;
+  bool get diacompleto => _diacompleto ?? false;
+  bool hasDiacompleto() => _diacompleto != null;
+
+  // "Diacompletotext" field.
+  String? _diacompletotext;
+  String get diacompletotext => _diacompletotext ?? '';
+  bool hasDiacompletotext() => _diacompletotext != null;
+
+  // "Autoverificado" field.
+  bool? _autoverificado;
+  bool get autoverificado => _autoverificado ?? false;
+  bool hasAutoverificado() => _autoverificado != null;
+
+  // "idvehiculo" field.
+  DocumentReference? _idvehiculo;
+  DocumentReference? get idvehiculo => _idvehiculo;
+  bool hasIdvehiculo() => _idvehiculo != null;
+
   DocumentReference get parentReference => reference.parent.parent!;
 
   void _initializeFields() {
@@ -86,6 +111,11 @@ class VehiculosRecord extends FirestoreRecord {
     _finestacionamiento = snapshotData['Finestacionamiento'] as DateTime?;
     _idmovimientoactual =
         snapshotData['Idmovimientoactual'] as DocumentReference?;
+    _autoinspeccionado = snapshotData['Autoinspeccionado'] as bool?;
+    _diacompleto = snapshotData['Diacompleto'] as bool?;
+    _diacompletotext = snapshotData['Diacompletotext'] as String?;
+    _autoverificado = snapshotData['Autoverificado'] as bool?;
+    _idvehiculo = snapshotData['idvehiculo'] as DocumentReference?;
   }
 
   static Query<Map<String, dynamic>> collection([DocumentReference? parent]) =>
@@ -139,6 +169,11 @@ Map<String, dynamic> createVehiculosRecordData({
   DateTime? inicioestacionamiento,
   DateTime? finestacionamiento,
   DocumentReference? idmovimientoactual,
+  bool? autoinspeccionado,
+  bool? diacompleto,
+  String? diacompletotext,
+  bool? autoverificado,
+  DocumentReference? idvehiculo,
 }) {
   final firestoreData = mapToFirestore(
     <String, dynamic>{
@@ -153,6 +188,11 @@ Map<String, dynamic> createVehiculosRecordData({
       'inicioestacionamiento': inicioestacionamiento,
       'Finestacionamiento': finestacionamiento,
       'Idmovimientoactual': idmovimientoactual,
+      'Autoinspeccionado': autoinspeccionado,
+      'Diacompleto': diacompleto,
+      'Diacompletotext': diacompletotext,
+      'Autoverificado': autoverificado,
+      'idvehiculo': idvehiculo,
     }.withoutNulls,
   );
 
@@ -174,7 +214,12 @@ class VehiculosRecordDocumentEquality implements Equality<VehiculosRecord> {
         e1?.ultimotiempo == e2?.ultimotiempo &&
         e1?.inicioestacionamiento == e2?.inicioestacionamiento &&
         e1?.finestacionamiento == e2?.finestacionamiento &&
-        e1?.idmovimientoactual == e2?.idmovimientoactual;
+        e1?.idmovimientoactual == e2?.idmovimientoactual &&
+        e1?.autoinspeccionado == e2?.autoinspeccionado &&
+        e1?.diacompleto == e2?.diacompleto &&
+        e1?.diacompletotext == e2?.diacompletotext &&
+        e1?.autoverificado == e2?.autoverificado &&
+        e1?.idvehiculo == e2?.idvehiculo;
   }
 
   @override
@@ -189,7 +234,12 @@ class VehiculosRecordDocumentEquality implements Equality<VehiculosRecord> {
         e?.ultimotiempo,
         e?.inicioestacionamiento,
         e?.finestacionamiento,
-        e?.idmovimientoactual
+        e?.idmovimientoactual,
+        e?.autoinspeccionado,
+        e?.diacompleto,
+        e?.diacompletotext,
+        e?.autoverificado,
+        e?.idvehiculo
       ]);
 
   @override

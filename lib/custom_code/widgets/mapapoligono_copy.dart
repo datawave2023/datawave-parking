@@ -1,5 +1,6 @@
 // Automatic FlutterFlow imports
 import '/backend/backend.dart';
+import '/backend/schema/structs/index.dart';
 import '/actions/actions.dart' as action_blocks;
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -33,19 +34,29 @@ class MapapoligonoCopy extends StatefulWidget {
 class _MapapoligonoCopyState extends State<MapapoligonoCopy> {
   late maps.GoogleMapController _mapController;
   List<maps.LatLng> _polygonPoints = [
-    maps.LatLng(-31.399060290195738, -64.51080301951468),
-    maps.LatLng(-31.39632209853696, -64.50870553217766),
-    maps.LatLng(-31.398373460327605, -64.50546542386165),
-    maps.LatLng(-31.401194009595066, -64.50194636582307),
-    maps.LatLng(-31.40736595484785, -64.50786868300996),
-    maps.LatLng(-31.399060290195738, -64.51080301951468),
+    maps.LatLng(-31.4674925, -64.535826),
+    maps.LatLng(-31.4679866, -64.540654),
+    maps.LatLng(-31.4736417, -64.5342811),
+    maps.LatLng(-31.4759659, -64.5328005),
+    maps.LatLng(-31.4788939, -64.5316632),
+    maps.LatLng(-31.4816389, -64.5306332),
+    maps.LatLng(-31.4821329, -64.5299466),
+    maps.LatLng(-31.4794429, -64.525934),
+    maps.LatLng(-31.4748313, -64.522651),
+    maps.LatLng(-31.4628253, -64.5194538),
+    maps.LatLng(-31.4621664, -64.5224579),
+    maps.LatLng(-31.4752888, -64.5258053),
+    maps.LatLng(-31.4779057, -64.5277794),
+    maps.LatLng(-31.4789854, -64.5291741),
+    maps.LatLng(-31.4751058, -64.5300539),
+    maps.LatLng(-31.4674925, -64.535826),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mapa de Google'),
+        title: Text('Zona de estacionamiento medido'),
       ),
       body: maps.GoogleMap(
         onMapCreated: (controller) {

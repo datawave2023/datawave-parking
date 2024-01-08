@@ -1,9 +1,78 @@
 {
-  "indexes": [],
+  "indexes": [
+    {
+      "collectionGroup": "Hospedajes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "Tipoactturistica",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fecha",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "autosinspeccionados",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "diadecobro",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fechapago",
+          "order": "DESCENDING"
+        }
+      ]
+    }
+  ],
   "fieldOverrides": [
     {
-      "collectionGroup": "Vehiculos",
-      "fieldPath": "Activo",
+      "collectionGroup": "fcm_tokens",
+      "fieldPath": "fcm_token",
+      "indexes": [
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "Balance",
+      "fieldPath": "Fecha",
+      "indexes": [
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "Movimientos",
+      "fieldPath": "Inicio",
+      "indexes": [
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "Infracciones",
+      "fieldPath": "Fecha",
+      "indexes": [
+        {
+          "order": "DESCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "Movimientos",
+      "fieldPath": "idvehiculo",
       "indexes": [
         {
           "order": "ASCENDING",
@@ -13,7 +82,7 @@
     },
     {
       "collectionGroup": "Vehiculos",
-      "fieldPath": "Patente",
+      "fieldPath": "idvehiculo",
       "indexes": [
         {
           "order": "ASCENDING",

@@ -1,14 +1,16 @@
 import '/auth/firebase_auth/auth_util.dart';
+import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'pag_intermedia_model.dart';
 export 'pag_intermedia_model.dart';
@@ -28,11 +30,19 @@ class _PagIntermediaWidgetState extends State<PagIntermediaWidget>
 
   final animationsMap = {
     'imageOnPageLoadAnimation': AnimationInfo(
+      loop: true,
       trigger: AnimationTrigger.onPageLoad,
       effects: [
         RotateEffect(
           curve: Curves.easeInOut,
           delay: 0.ms,
+          duration: 600.ms,
+          begin: 0.0,
+          end: 1.0,
+        ),
+        FadeEffect(
+          curve: Curves.easeInOut,
+          delay: 600.ms,
           duration: 600.ms,
           begin: 0.0,
           end: 1.0,
@@ -48,15 +58,33 @@ class _PagIntermediaWidgetState extends State<PagIntermediaWidget>
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      if (valueOrDefault<bool>(currentUserDocument?.admin, false)) {
+      _model.queryuser = await queryUsersRecordOnce(
+        queryBuilder: (usersRecord) => usersRecord.where(
+          'uid',
+          isEqualTo: currentUserReference?.id,
+        ),
+        singleRecord: true,
+      ).then((s) => s.firstOrNull);
+      setState(() {
+        _model.iduser = currentUserReference;
+        _model.admin = _model.queryuser!.admin;
+        _model.inspec = _model.queryuser!.inspector;
+      });
+      if (_model.admin) {
         await Future.delayed(const Duration(milliseconds: 3000));
 
         context.pushNamed('VistaAdmin');
+
+        return;
       } else {
-        if (valueOrDefault<bool>(currentUserDocument?.inspector, false)) {
+        if (_model.inspec) {
+          await Future.delayed(const Duration(milliseconds: 3000));
+
           context.pushNamed('CheckPatente');
         } else {
-          context.pushNamed('HomePage');
+          await Future.delayed(const Duration(milliseconds: 3000));
+
+          context.pushNamed('Hometurismo');
         }
 
         return;
@@ -92,17 +120,20 @@ class _PagIntermediaWidgetState extends State<PagIntermediaWidget>
           : FocusScope.of(context).unfocus(),
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: FlutterFlowTheme.of(context).primaryBtnText,
+        backgroundColor: FlutterFlowTheme.of(context).primary,
         appBar: AppBar(
           backgroundColor: FlutterFlowTheme.of(context).primary,
           automaticallyImplyLeading: false,
-          title: Text(
-            'Page Title',
-            style: FlutterFlowTheme.of(context).headlineMedium.override(
-                  fontFamily: 'Outfit',
-                  color: Colors.white,
-                  fontSize: 22.0,
-                ),
+          title: Align(
+            alignment: AlignmentDirectional(0.0, -1.0),
+            child: Text(
+              'Bienvenidos',
+              style: FlutterFlowTheme.of(context).headlineMedium.override(
+                    fontFamily: 'Outfit',
+                    color: Colors.white,
+                    fontSize: 22.0,
+                  ),
+            ),
           ),
           actions: [],
           centerTitle: false,
@@ -110,30 +141,19 @@ class _PagIntermediaWidgetState extends State<PagIntermediaWidget>
         ),
         body: SafeArea(
           top: true,
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Stack(
             children: [
               Align(
-                alignment: AlignmentDirectional(0.00, 0.00),
+                alignment: AlignmentDirectional(0.0, 0.0),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(50.0),
                   child: Image.asset(
-                    'assets/images/portada_ARIEL2.jpg',
-                    width: 300.0,
-                    height: 200.0,
+                    'assets/images/encabezado_APP.png',
                     fit: BoxFit.fitHeight,
                   ),
                 ).animateOnPageLoad(animationsMap['imageOnPageLoadAnimation']!),
               ),
-              Lottie.asset(
-                'assets/lottie_animations/Animation_-_1698241392910.json',
-                width: 150.0,
-                height: 130.0,
-                fit: BoxFit.cover,
-                animate: true,
-              ),
-            ].divide(SizedBox(height: 20.0)),
+            ],
           ),
         ),
       ),

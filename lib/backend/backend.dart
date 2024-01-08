@@ -14,6 +14,8 @@ import 'schema/mensajesusuarios_record.dart';
 import 'schema/hospedajes_record.dart';
 import 'schema/provincias_record.dart';
 import 'schema/ciudades_record.dart';
+import 'schema/autosinspeccionados_record.dart';
+import 'schema/autos_general_record.dart';
 
 export 'dart:async' show StreamSubscription;
 export 'package:cloud_firestore/cloud_firestore.dart';
@@ -30,6 +32,8 @@ export 'schema/mensajesusuarios_record.dart';
 export 'schema/hospedajes_record.dart';
 export 'schema/provincias_record.dart';
 export 'schema/ciudades_record.dart';
+export 'schema/autosinspeccionados_record.dart';
+export 'schema/autos_general_record.dart';
 
 /// Functions to query UsersRecords (as a Stream and as a Future).
 Future<int> queryUsersRecordCount({
@@ -377,6 +381,83 @@ Future<List<CiudadesRecord>> queryCiudadesRecordOnce({
     queryCollectionOnce(
       CiudadesRecord.collection(parent),
       CiudadesRecord.fromSnapshot,
+      queryBuilder: queryBuilder,
+      limit: limit,
+      singleRecord: singleRecord,
+    );
+
+/// Functions to query AutosinspeccionadosRecords (as a Stream and as a Future).
+Future<int> queryAutosinspeccionadosRecordCount({
+  DocumentReference? parent,
+  Query Function(Query)? queryBuilder,
+  int limit = -1,
+}) =>
+    queryCollectionCount(
+      AutosinspeccionadosRecord.collection(parent),
+      queryBuilder: queryBuilder,
+      limit: limit,
+    );
+
+Stream<List<AutosinspeccionadosRecord>> queryAutosinspeccionadosRecord({
+  DocumentReference? parent,
+  Query Function(Query)? queryBuilder,
+  int limit = -1,
+  bool singleRecord = false,
+}) =>
+    queryCollection(
+      AutosinspeccionadosRecord.collection(parent),
+      AutosinspeccionadosRecord.fromSnapshot,
+      queryBuilder: queryBuilder,
+      limit: limit,
+      singleRecord: singleRecord,
+    );
+
+Future<List<AutosinspeccionadosRecord>> queryAutosinspeccionadosRecordOnce({
+  DocumentReference? parent,
+  Query Function(Query)? queryBuilder,
+  int limit = -1,
+  bool singleRecord = false,
+}) =>
+    queryCollectionOnce(
+      AutosinspeccionadosRecord.collection(parent),
+      AutosinspeccionadosRecord.fromSnapshot,
+      queryBuilder: queryBuilder,
+      limit: limit,
+      singleRecord: singleRecord,
+    );
+
+/// Functions to query AutosGeneralRecords (as a Stream and as a Future).
+Future<int> queryAutosGeneralRecordCount({
+  Query Function(Query)? queryBuilder,
+  int limit = -1,
+}) =>
+    queryCollectionCount(
+      AutosGeneralRecord.collection,
+      queryBuilder: queryBuilder,
+      limit: limit,
+    );
+
+Stream<List<AutosGeneralRecord>> queryAutosGeneralRecord({
+  Query Function(Query)? queryBuilder,
+  int limit = -1,
+  bool singleRecord = false,
+}) =>
+    queryCollection(
+      AutosGeneralRecord.collection,
+      AutosGeneralRecord.fromSnapshot,
+      queryBuilder: queryBuilder,
+      limit: limit,
+      singleRecord: singleRecord,
+    );
+
+Future<List<AutosGeneralRecord>> queryAutosGeneralRecordOnce({
+  Query Function(Query)? queryBuilder,
+  int limit = -1,
+  bool singleRecord = false,
+}) =>
+    queryCollectionOnce(
+      AutosGeneralRecord.collection,
+      AutosGeneralRecord.fromSnapshot,
       queryBuilder: queryBuilder,
       limit: limit,
       singleRecord: singleRecord,

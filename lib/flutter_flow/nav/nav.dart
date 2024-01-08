@@ -5,9 +5,12 @@ import 'package:go_router/go_router.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import '/backend/backend.dart';
+import '/backend/schema/structs/index.dart';
 
 import '/auth/base_auth_user_provider.dart';
 
+import '/backend/push_notifications/push_notifications_handler.dart'
+    show PushNotificationsHandler;
 import '/index.dart';
 import '/main.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -88,28 +91,35 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               appStateNotifier.loggedIn ? PagIntermediaWidget() : LoginWidget(),
         ),
         FFRoute(
-          name: 'HomePage',
-          path: '/homePage',
-          builder: (context, params) => HomePageWidget(),
+          name: 'estacionamiento',
+          path: '/estacionamiento',
+          requireAuth: true,
+          builder: (context, params) => EstacionamientoWidget(
+            antesdela16: params.getParam('antesdela16', ParamType.bool),
+          ),
         ),
         FFRoute(
           name: 'Misvehiculos',
           path: '/misvehiculos',
+          requireAuth: true,
           builder: (context, params) => MisvehiculosWidget(),
         ),
         FFRoute(
           name: 'Mismovimientos',
           path: '/mismovimientos',
+          requireAuth: true,
           builder: (context, params) => MismovimientosWidget(),
         ),
         FFRoute(
           name: 'Misinfracciones',
           path: '/misinfracciones',
+          requireAuth: true,
           builder: (context, params) => MisinfraccionesWidget(),
         ),
         FFRoute(
           name: 'Infraccion',
           path: '/infraccion',
+          requireAuth: true,
           builder: (context, params) => InfraccionWidget(
             idInfraccion: params.getParam('idInfraccion',
                 ParamType.DocumentReference, false, ['Users', 'Infracciones']),
@@ -128,31 +138,37 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: 'CheckPatente',
           path: '/checkPatente',
+          requireAuth: true,
           builder: (context, params) => CheckPatenteWidget(),
         ),
         FFRoute(
-          name: 'Buscarvehiculo',
-          path: '/buscarvehiculo',
-          builder: (context, params) => BuscarvehiculoWidget(),
+          name: 'Buscarvehiculo_obsoleta',
+          path: '/buscarvehiculoObsoleta',
+          requireAuth: true,
+          builder: (context, params) => BuscarvehiculoObsoletaWidget(),
         ),
         FFRoute(
-          name: 'pruebamapa',
-          path: '/pruebamapa',
-          builder: (context, params) => PruebamapaWidget(),
+          name: 'pruebamapa_obsoleta',
+          path: '/pruebamapaObsoleta',
+          requireAuth: true,
+          builder: (context, params) => PruebamapaObsoletaWidget(),
         ),
         FFRoute(
           name: 'VistaAdmin',
           path: '/vistaAdmin',
+          requireAuth: true,
           builder: (context, params) => VistaAdminWidget(),
         ),
         FFRoute(
           name: 'pag_intermedia',
           path: '/pagIntermedia',
+          requireAuth: true,
           builder: (context, params) => PagIntermediaWidget(),
         ),
         FFRoute(
           name: 'Perfilusuario',
           path: '/perfilusuario',
+          requireAuth: true,
           builder: (context, params) => PerfilusuarioWidget(
             iduser: params.getParam(
                 'iduser', ParamType.DocumentReference, false, ['Users']),
@@ -161,6 +177,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: 'Mensajes',
           path: '/mensajes',
+          requireAuth: true,
           builder: (context, params) => MensajesWidget(
             iduser: params.getParam(
                 'iduser', ParamType.DocumentReference, false, ['Users']),
@@ -169,12 +186,65 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: 'Hometurismo',
           path: '/hometurismo',
-          builder: (context, params) => HometurismoWidget(),
+          requireAuth: true,
+          builder: (context, params) => HometurismoWidget(
+            home: params.getParam('home', ParamType.String),
+          ),
         ),
         FFRoute(
           name: 'detalleturismo',
           path: '/detalleturismo',
-          builder: (context, params) => DetalleturismoWidget(),
+          requireAuth: true,
+          builder: (context, params) => DetalleturismoWidget(
+            indextab: params.getParam('indextab', ParamType.int),
+          ),
+        ),
+        FFRoute(
+          name: 'Detalleturismo2',
+          path: '/detalleturismo2',
+          requireAuth: true,
+          builder: (context, params) => Detalleturismo2Widget(
+            idturismo: params.getParam('idturismo', ParamType.DocumentReference,
+                false, ['Hospedajes']),
+          ),
+        ),
+        FFRoute(
+          name: 'mapaautosactivos',
+          path: '/mapaautosactivos',
+          requireAuth: true,
+          builder: (context, params) => MapaautosactivosWidget(),
+        ),
+        FFRoute(
+          name: 'Vehiculosconaviso',
+          path: '/vehiculosconaviso',
+          requireAuth: true,
+          builder: (context, params) => VehiculosconavisoWidget(),
+        ),
+        FFRoute(
+          name: 'admin_pago_cuidadorautos',
+          path: '/adminPagoCuidadorautos',
+          requireAuth: true,
+          builder: (context, params) => AdminPagoCuidadorautosWidget(
+            iduser: params.getParam(
+                'iduser', ParamType.DocumentReference, false, ['Users']),
+          ),
+        ),
+        FFRoute(
+          name: 'codigooperacionpage',
+          path: '/codigooperacionpage',
+          requireAuth: true,
+          builder: (context, params) => CodigooperacionpageWidget(
+            iduser: params.getParam(
+                'iduser', ParamType.DocumentReference, false, ['Users']),
+            idvehiculo: params.getParam('idvehiculo',
+                ParamType.DocumentReference, false, ['Users', 'Vehiculos']),
+          ),
+        ),
+        FFRoute(
+          name: 'Agregarcuidador',
+          path: '/agregarcuidador',
+          requireAuth: true,
+          builder: (context, params) => AgregarcuidadorWidget(),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );
@@ -354,18 +424,14 @@ class FFRoute {
                 )
               : builder(context, ffParams);
           final child = appStateNotifier.loading
-              ? Center(
-                  child: SizedBox(
-                    width: 50.0,
-                    height: 50.0,
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        FlutterFlowTheme.of(context).primary,
-                      ),
-                    ),
+              ? Container(
+                  color: Colors.transparent,
+                  child: Image.asset(
+                    'assets/images/encabezado_APP.png',
+                    fit: BoxFit.contain,
                   ),
                 )
-              : page;
+              : PushNotificationsHandler(child: page);
 
           final transitionInfo = state.transitionInfo;
           return transitionInfo.hasTransition
@@ -373,13 +439,20 @@ class FFRoute {
                   key: state.pageKey,
                   child: child,
                   transitionDuration: transitionInfo.duration,
-                  transitionsBuilder: PageTransition(
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) =>
+                          PageTransition(
                     type: transitionInfo.transitionType,
                     duration: transitionInfo.duration,
                     reverseDuration: transitionInfo.duration,
                     alignment: transitionInfo.alignment,
                     child: child,
-                  ).transitionsBuilder,
+                  ).buildTransitions(
+                    context,
+                    animation,
+                    secondaryAnimation,
+                    child,
+                  ),
                 )
               : MaterialPage(key: state.pageKey, child: child);
         },
@@ -400,7 +473,11 @@ class TransitionInfo {
   final Duration duration;
   final Alignment? alignment;
 
-  static TransitionInfo appDefault() => TransitionInfo(hasTransition: false);
+  static TransitionInfo appDefault() => TransitionInfo(
+        hasTransition: true,
+        transitionType: PageTransitionType.fade,
+        duration: Duration(milliseconds: 500),
+      );
 }
 
 class RootPageContext {

@@ -42,6 +42,151 @@ String dateTimeFormat(String format, DateTime? dateTime, {String? locale}) {
   return DateFormat(format, locale).format(dateTime);
 }
 
+Theme wrapInMaterialDatePickerTheme(
+  BuildContext context,
+  Widget child, {
+  required Color headerBackgroundColor,
+  required Color headerForegroundColor,
+  required TextStyle headerTextStyle,
+  required Color pickerBackgroundColor,
+  required Color pickerForegroundColor,
+  required Color selectedDateTimeBackgroundColor,
+  required Color selectedDateTimeForegroundColor,
+  required Color actionButtonForegroundColor,
+  required double iconSize,
+}) {
+  final baseTheme = Theme.of(context);
+  final dateTimeMaterialStateForegroundColor =
+      MaterialStateProperty.resolveWith((states) {
+    if (states.contains(MaterialState.disabled)) {
+      return pickerForegroundColor.withOpacity(0.60);
+    }
+    if (states.contains(MaterialState.selected)) {
+      return selectedDateTimeForegroundColor;
+    }
+    if (states.isEmpty) {
+      return pickerForegroundColor;
+    }
+    return null;
+  });
+
+  final dateTimeMaterialStateBackgroundColor =
+      MaterialStateProperty.resolveWith((states) {
+    if (states.contains(MaterialState.selected)) {
+      return selectedDateTimeBackgroundColor;
+    }
+    return null;
+  });
+
+  return Theme(
+    data: baseTheme.copyWith(
+      colorScheme: baseTheme.colorScheme.copyWith(
+        onSurface: pickerForegroundColor,
+      ),
+      disabledColor: pickerForegroundColor.withOpacity(0.3),
+      textTheme: baseTheme.textTheme.copyWith(
+        headlineSmall: headerTextStyle,
+        headlineMedium: headerTextStyle,
+      ),
+      iconTheme: baseTheme.iconTheme.copyWith(
+        size: iconSize,
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: ButtonStyle(
+            foregroundColor: MaterialStatePropertyAll(
+              actionButtonForegroundColor,
+            ),
+            overlayColor: MaterialStateProperty.resolveWith((states) {
+              if (states.contains(MaterialState.hovered)) {
+                return actionButtonForegroundColor.withOpacity(0.04);
+              }
+              if (states.contains(MaterialState.focused) ||
+                  states.contains(MaterialState.pressed)) {
+                return actionButtonForegroundColor.withOpacity(0.12);
+              }
+              return null;
+            })),
+      ),
+      datePickerTheme: DatePickerThemeData(
+        backgroundColor: pickerBackgroundColor,
+        headerBackgroundColor: headerBackgroundColor,
+        headerForegroundColor: headerForegroundColor,
+        weekdayStyle: baseTheme.textTheme.labelMedium!.copyWith(
+          color: pickerForegroundColor,
+        ),
+        dayBackgroundColor: dateTimeMaterialStateBackgroundColor,
+        todayBackgroundColor: dateTimeMaterialStateBackgroundColor,
+        yearBackgroundColor: dateTimeMaterialStateBackgroundColor,
+        dayForegroundColor: dateTimeMaterialStateForegroundColor,
+        todayForegroundColor: dateTimeMaterialStateForegroundColor,
+        yearForegroundColor: dateTimeMaterialStateForegroundColor,
+      ),
+    ),
+    child: child,
+  );
+}
+
+Theme wrapInMaterialTimePickerTheme(
+  BuildContext context,
+  Widget child, {
+  required Color headerBackgroundColor,
+  required Color headerForegroundColor,
+  required TextStyle headerTextStyle,
+  required Color pickerBackgroundColor,
+  required Color pickerForegroundColor,
+  required Color selectedDateTimeBackgroundColor,
+  required Color selectedDateTimeForegroundColor,
+  required Color actionButtonForegroundColor,
+  required double iconSize,
+}) {
+  final baseTheme = Theme.of(context);
+  return Theme(
+    data: baseTheme.copyWith(
+      iconTheme: baseTheme.iconTheme.copyWith(
+        size: iconSize,
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: ButtonStyle(
+            foregroundColor: MaterialStatePropertyAll(
+              actionButtonForegroundColor,
+            ),
+            overlayColor: MaterialStateProperty.resolveWith((states) {
+              if (states.contains(MaterialState.hovered)) {
+                return actionButtonForegroundColor.withOpacity(0.04);
+              }
+              if (states.contains(MaterialState.focused) ||
+                  states.contains(MaterialState.pressed)) {
+                return actionButtonForegroundColor.withOpacity(0.12);
+              }
+              return null;
+            })),
+      ),
+      timePickerTheme: baseTheme.timePickerTheme.copyWith(
+        backgroundColor: pickerBackgroundColor,
+        hourMinuteTextColor: pickerForegroundColor,
+        dialHandColor: selectedDateTimeBackgroundColor,
+        dialTextColor: MaterialStateColor.resolveWith((states) =>
+            states.contains(MaterialState.selected)
+                ? selectedDateTimeForegroundColor
+                : pickerForegroundColor),
+        dayPeriodBorderSide: BorderSide(
+          color: pickerForegroundColor,
+        ),
+        dayPeriodTextColor: MaterialStateColor.resolveWith((states) =>
+            states.contains(MaterialState.selected)
+                ? selectedDateTimeForegroundColor
+                : pickerForegroundColor),
+        dayPeriodColor: MaterialStateColor.resolveWith((states) =>
+            states.contains(MaterialState.selected)
+                ? selectedDateTimeBackgroundColor
+                : Colors.transparent),
+        entryModeIconColor: pickerForegroundColor,
+      ),
+    ),
+    child: child,
+  );
+}
+
 Future launchURL(String url) async {
   var uri = Uri.parse(url).toString();
   try {
@@ -151,6 +296,27 @@ extension DateTimeComparisonOperators on DateTime {
   bool operator >=(DateTime other) => this > other || isAtSameMomentAs(other);
 }
 
+T? castToType<T>(dynamic value) {
+  if (value == null) {
+    return null;
+  }
+  switch (T) {
+    case double:
+      // Doubles may be stored as ints in some cases.
+      return value.toDouble() as T;
+    case int:
+      // Likewise, ints may be stored as doubles. If this is the case
+      // (i.e. no decimal value), return the value as an int.
+      if (value is num && value.toInt() == value) {
+        return value.toInt() as T;
+      }
+      break;
+    default:
+      break;
+  }
+  return value as T;
+}
+
 dynamic getJsonField(
   dynamic response,
   String jsonPath, [
@@ -164,7 +330,12 @@ dynamic getJsonField(
     return field.map((f) => f.value).toList();
   }
   final value = field.first.value;
-  return isForList && value is! Iterable ? [value] : value;
+  if (isForList) {
+    return value is! Iterable
+        ? [value]
+        : (value is List ? value : value.toList());
+  }
+  return value;
 }
 
 Rect? getWidgetBoundingBox(BuildContext context) {

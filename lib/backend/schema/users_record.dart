@@ -91,6 +91,26 @@ class UsersRecord extends FirestoreRecord {
   String get genero => _genero ?? '';
   bool hasGenero() => _genero != null;
 
+  // "Fechadepagoinspector" field.
+  DateTime? _fechadepagoinspector;
+  DateTime? get fechadepagoinspector => _fechadepagoinspector;
+  bool hasFechadepagoinspector() => _fechadepagoinspector != null;
+
+  // "Montopagadoinspector" field.
+  double? _montopagadoinspector;
+  double get montopagadoinspector => _montopagadoinspector ?? 0.0;
+  bool hasMontopagadoinspector() => _montopagadoinspector != null;
+
+  // "Vehiculos" field.
+  List<String>? _vehiculos;
+  List<String> get vehiculos => _vehiculos ?? const [];
+  bool hasVehiculos() => _vehiculos != null;
+
+  // "vehiculosinspeccionados" field.
+  int? _vehiculosinspeccionados;
+  int get vehiculosinspeccionados => _vehiculosinspeccionados ?? 0;
+  bool hasVehiculosinspeccionados() => _vehiculosinspeccionados != null;
+
   void _initializeFields() {
     _email = snapshotData['email'] as String?;
     _displayName = snapshotData['display_name'] as String?;
@@ -107,6 +127,12 @@ class UsersRecord extends FirestoreRecord {
     _provincia = snapshotData['Provincia'] as String?;
     _ciudad = snapshotData['Ciudad'] as String?;
     _genero = snapshotData['Genero'] as String?;
+    _fechadepagoinspector = snapshotData['Fechadepagoinspector'] as DateTime?;
+    _montopagadoinspector =
+        castToType<double>(snapshotData['Montopagadoinspector']);
+    _vehiculos = getDataList(snapshotData['Vehiculos']);
+    _vehiculosinspeccionados =
+        castToType<int>(snapshotData['vehiculosinspeccionados']);
   }
 
   static CollectionReference get collection =>
@@ -158,6 +184,9 @@ Map<String, dynamic> createUsersRecordData({
   String? provincia,
   String? ciudad,
   String? genero,
+  DateTime? fechadepagoinspector,
+  double? montopagadoinspector,
+  int? vehiculosinspeccionados,
 }) {
   final firestoreData = mapToFirestore(
     <String, dynamic>{
@@ -176,6 +205,9 @@ Map<String, dynamic> createUsersRecordData({
       'Provincia': provincia,
       'Ciudad': ciudad,
       'Genero': genero,
+      'Fechadepagoinspector': fechadepagoinspector,
+      'Montopagadoinspector': montopagadoinspector,
+      'vehiculosinspeccionados': vehiculosinspeccionados,
     }.withoutNulls,
   );
 
@@ -187,6 +219,7 @@ class UsersRecordDocumentEquality implements Equality<UsersRecord> {
 
   @override
   bool equals(UsersRecord? e1, UsersRecord? e2) {
+    const listEquality = ListEquality();
     return e1?.email == e2?.email &&
         e1?.displayName == e2?.displayName &&
         e1?.photoUrl == e2?.photoUrl &&
@@ -201,7 +234,11 @@ class UsersRecordDocumentEquality implements Equality<UsersRecord> {
         e1?.telefono == e2?.telefono &&
         e1?.provincia == e2?.provincia &&
         e1?.ciudad == e2?.ciudad &&
-        e1?.genero == e2?.genero;
+        e1?.genero == e2?.genero &&
+        e1?.fechadepagoinspector == e2?.fechadepagoinspector &&
+        e1?.montopagadoinspector == e2?.montopagadoinspector &&
+        listEquality.equals(e1?.vehiculos, e2?.vehiculos) &&
+        e1?.vehiculosinspeccionados == e2?.vehiculosinspeccionados;
   }
 
   @override
@@ -220,7 +257,11 @@ class UsersRecordDocumentEquality implements Equality<UsersRecord> {
         e?.telefono,
         e?.provincia,
         e?.ciudad,
-        e?.genero
+        e?.genero,
+        e?.fechadepagoinspector,
+        e?.montopagadoinspector,
+        e?.vehiculos,
+        e?.vehiculosinspeccionados
       ]);
 
   @override

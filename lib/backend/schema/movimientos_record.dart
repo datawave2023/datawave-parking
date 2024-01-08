@@ -66,6 +66,11 @@ class MovimientosRecord extends FirestoreRecord {
   double get gasto => _gasto ?? 0.0;
   bool hasGasto() => _gasto != null;
 
+  // "diacompleto" field.
+  bool? _diacompleto;
+  bool get diacompleto => _diacompleto ?? false;
+  bool hasDiacompleto() => _diacompleto != null;
+
   DocumentReference get parentReference => reference.parent.parent!;
 
   void _initializeFields() {
@@ -79,6 +84,7 @@ class MovimientosRecord extends FirestoreRecord {
     _idvehiculo = snapshotData['idvehiculo'] as DocumentReference?;
     _idmovimiento = snapshotData['idmovimiento'] as DocumentReference?;
     _gasto = castToType<double>(snapshotData['gasto']);
+    _diacompleto = snapshotData['diacompleto'] as bool?;
   }
 
   static Query<Map<String, dynamic>> collection([DocumentReference? parent]) =>
@@ -131,6 +137,7 @@ Map<String, dynamic> createMovimientosRecordData({
   DocumentReference? idvehiculo,
   DocumentReference? idmovimiento,
   double? gasto,
+  bool? diacompleto,
 }) {
   final firestoreData = mapToFirestore(
     <String, dynamic>{
@@ -144,6 +151,7 @@ Map<String, dynamic> createMovimientosRecordData({
       'idvehiculo': idvehiculo,
       'idmovimiento': idmovimiento,
       'gasto': gasto,
+      'diacompleto': diacompleto,
     }.withoutNulls,
   );
 
@@ -164,7 +172,8 @@ class MovimientosRecordDocumentEquality implements Equality<MovimientosRecord> {
         e1?.tiempo == e2?.tiempo &&
         e1?.idvehiculo == e2?.idvehiculo &&
         e1?.idmovimiento == e2?.idmovimiento &&
-        e1?.gasto == e2?.gasto;
+        e1?.gasto == e2?.gasto &&
+        e1?.diacompleto == e2?.diacompleto;
   }
 
   @override
@@ -178,7 +187,8 @@ class MovimientosRecordDocumentEquality implements Equality<MovimientosRecord> {
         e?.tiempo,
         e?.idvehiculo,
         e?.idmovimiento,
-        e?.gasto
+        e?.gasto,
+        e?.diacompleto
       ]);
 
   @override
